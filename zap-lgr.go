@@ -51,7 +51,7 @@ func InitZapLogger(dbg bool) func() {
 	}
 }
 
-// return the default global *zap.Logger
+// return the default global *zap.ZapLgr
 func Z() *zap.Logger {
 	loggerMutex.RLock()
 	s:= logger
@@ -59,7 +59,7 @@ func Z() *zap.Logger {
 	return s
 }
 
-// wrap the default global *zap.Logger as a go stdlib log
+// wrap the default global *zap.ZapLgr as a go stdlib log
 func NewStdLog() *stdlog.Logger {
 	if Z() == nil {
 		InitZapLogger(true)
@@ -67,7 +67,7 @@ func NewStdLog() *stdlog.Logger {
 	return zap.NewStdLog(logger)
 }
 
-// wrap the default global *zap.Logger as a go stdlib log at specific log level
+// wrap the default global *zap.ZapLgr as a go stdlib log at specific log level
 func NewStdLogAt(lvl string) *stdlog.Logger {
 	if Z() == nil {
 		InitZapLogger(true)
@@ -94,11 +94,11 @@ type GopkgzRestLogger interface {
 	Logf(format string, args ...interface{})
 }
 
-var GopkgzRestLoggerBridge GopkgzRestLogger = &Logger{}
+var GopkgzRestLoggerBridge GopkgzRestLogger = &ZapLgr{}
 
-type Logger struct {}
+type ZapLgr struct {}
 
-func (z *Logger) Logf(format string, args ...interface{}) {
+func (z *ZapLgr) Logf(format string, args ...interface{}) {
 	Infof(format, args...)
 }
 
@@ -109,7 +109,7 @@ func Default() GopkgzRestLogger {
 
 // bridged Option type for github.com/go-pkgz/lgr v0.6.3
 // Option func type
-type Option func(l *Logger)
+type Option func(l *ZapLgr)
 
 // levels from github.com/go-pkgz/lgr/logger.go
 var gopkgzlgrLevels = []string{"TRACE", "DEBUG", "INFO", "WARN", "ERROR", "PANIC", "FATAL"}
@@ -246,59 +246,59 @@ func Panicf(format string, args ...interface{}) {
 
 // Out sets out writer, stdout by default
 func Out(w io.Writer) Option {
-	return func(l *Logger) {
+	return func(l *ZapLgr) {
 	}
 }
 
 // Err sets error writer, stderr by default
 func Err(w io.Writer) Option {
-	return func(l *Logger) {
+	return func(l *ZapLgr) {
 	}
 }
 
 // Debug turn on dbg mode
-func Debug(l *Logger) {
+func Debug(l *ZapLgr) {
 }
 
 // Trace turn on trace + dbg mode
-func Trace(l *Logger) {
+func Trace(l *ZapLgr) {
 }
 
 // CallerDepth sets number of stack frame skipped for caller reporting, 0 by default
 func CallerDepth(n int) Option {
-	return func(l *Logger) {
+	return func(l *ZapLgr) {
 	}
 }
 
 // Format sets output layout, overwrites all options for individual parts, i.e. Caller*, Msec and LevelBraces
 func Format(f string) Option {
-	return func(l *Logger) {
+	return func(l *ZapLgr) {
 	}
 }
 
 // CallerFunc adds caller info with function name. Ignored if Format option used.
-func CallerFunc(l *Logger) {
+func CallerFunc(l *ZapLgr) {
 }
 
 // CallerPkg adds caller's package name. Ignored if Format option used.
-func CallerPkg(l *Logger) {
+func CallerPkg(l *ZapLgr) {
 }
 
 // LevelBraces surrounds level with [], i.e. [INFO]. Ignored if Format option used.
-func LevelBraces(l *Logger) {
+func LevelBraces(l *ZapLgr) {
 }
 
 // CallerFile adds caller info with file, and line number. Ignored if Format option used.
-func CallerFile(l *Logger) {
+func CallerFile(l *ZapLgr) {
 }
 
 // Msec adds .msec to timestamp. Ignored if Format option used.
-func Msec(l *Logger) {
+func Msec(l *ZapLgr) {
 }
 
 // Secret sets list of substring to be hidden, i.e. replaced by "******"
 // Useful to prevent passwords or other sensitive tokens to be logged.
 func Secret(vals ...string) Option {
-	return func(l *Logger) {
+	return func(l *ZapLgr) {
 	}
 }
