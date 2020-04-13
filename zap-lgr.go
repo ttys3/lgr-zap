@@ -48,12 +48,17 @@ func InitZapLogger(dbg bool) func() {
 	}
 }
 
-// return the default global *zap.ZapLgr
+// return the default global *zap.Logger
 func Z() *zap.Logger {
 	loggerMutex.RLock()
 	s:= logger
 	loggerMutex.RUnlock()
 	return s
+}
+
+// return zap's default _globalL *zap.SugaredLogger
+func S() *zap.SugaredLogger {
+	return zap.S()
 }
 
 // wrap the default global *zap.ZapLgr as a go stdlib log
